@@ -7,7 +7,7 @@
 import TodoList from "./_components/TodoList";
 
 export default function Home() {
-  return <main className="max-w-3xl max-auto mt-40 text-center items-center">
+  return <main className="max-w-3xl max-auto mt-40 ml-52 text-center items-center">
     <TodoList />
   </main>
 }
