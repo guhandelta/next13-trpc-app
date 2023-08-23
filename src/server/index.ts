@@ -6,6 +6,7 @@ import { z } from 'zod'
 
 import { publicProcedure, router } from "./trpc";
 import { todos } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 // Setup SQLite3 DB
 const sqlite = new Database("sqlite.db");
@@ -27,7 +28,23 @@ export const appRouter = router({
         // input(z.string) => just get the contents from the input
         await db.insert(todos).values({ content: options.input, done: 0 }).run();
         return true;
-    })
+    }),
+    setDone: publicProcedure
+                .input(
+                    // zod would take in the id of the Todo on which the action was performed, along with the value of done
+                    z.object({
+                        id: z.number(),
+                        done: z.number(),
+                    })
+                )
+                .mutation(async options =>{
+                    await db
+                        .update(todos)
+                        .set({ done: options.input.done })
+                        .where(eq(todos.id, options.input.id))
+                        .run();
+                    return true;
+                })  
 });
 
 export type AppRouter = typeof appRouter;

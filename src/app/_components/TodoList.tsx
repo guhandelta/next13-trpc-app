@@ -11,6 +11,12 @@ export default function TodoList(){
             getTodos.refetch();
         }
     });
+    const setDone = trpc.setDone.useMutation({
+        onSettled: () => {
+            // refetch the todos after adding a new one to make sure it's there!
+            getTodos.refetch();
+        }
+    });
     
     const [ content, setContent ] = useState("");
 
@@ -18,6 +24,7 @@ export default function TodoList(){
         <div>
             <div className="mb-20 text-white my-5 text-3xl">
                 {
+                    // Usually the return type of the data from db would be `any` in case of JS app, but here tRPC would preserve the types, all the way from the schema, to the client(for both the Queries adn the Mutation), though Drizzle, and RPC calls.
                     getTodos?.data?.map(({ id, content, done }) => (
                         <div 
                             key={id} 
@@ -27,6 +34,13 @@ export default function TodoList(){
                                 id={`check-${id}`}
                                 type="checkbox"
                                 checked={!!done}
+                                onChange={async () => {
+                                    setDone.mutate({
+                                        id,
+                                        // Just flip the value, whatever it was
+                                        done: done ? 0 : 1,
+                                    });
+                                }}
                             />
                             <label htmlFor={`check-${id}`}
                             >
