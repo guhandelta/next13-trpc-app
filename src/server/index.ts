@@ -4,7 +4,7 @@ import { publicProcedure, router } from "./trpc";
 Create an instane of the appRouter using the router that was created in TRPC, and use that to add any fucntions that are necessary.*/
 export const appRouter = router({
     getTodos: publicProcedure.query(async () => {
-        return [10, 20, 30]
+        return [10, 20, 30, 40, 50]
     }),
 });
 
