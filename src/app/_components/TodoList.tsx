@@ -2,9 +2,16 @@
 
 import { useState } from "react";
 import { trpc } from "../_trpc/Client";
+import { serverClient } from "../_trpc/serverClient";
 
-export default function TodoList(){
-    const getTodos = trpc.getTodos.useQuery();
+export default function TodoList({ 
+        initialTodos 
+    }:{ 
+        initialTodos: 
+        // initialTodos would be wrapped up in a promise, and to unwrap that promise the returned value is wrapped within an Await
+            Awaited<ReturnType<(typeof serverClient)["getTodos"]>> 
+    }){
+    const getTodos = trpc.getTodos.useQuery(undefined, { initialData: initialTodos });
     const addTodo = trpc.addTodo.useMutation({
         onSettled: () => {
             // refetch the todos after adding a new one to make sure it's there!
