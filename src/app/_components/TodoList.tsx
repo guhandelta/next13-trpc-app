@@ -11,7 +11,11 @@ export default function TodoList({
         // initialTodos would be wrapped up in a promise, and to unwrap that promise the returned value is wrapped within an Await
             Awaited<ReturnType<(typeof serverClient)["getTodos"]>> 
     }){
-    const getTodos = trpc.getTodos.useQuery(undefined, { initialData: initialTodos });
+    const getTodos = trpc.getTodos.useQuery(undefined, { 
+        initialData: initialTodos,
+        refetchOnMount: false,
+        refetchOnReconnect: false 
+    });
     const addTodo = trpc.addTodo.useMutation({
         onSettled: () => {
             // refetch the todos after adding a new one to make sure it's there!
